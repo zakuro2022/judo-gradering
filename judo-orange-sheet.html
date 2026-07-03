@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Judo Orange Graderingsschema</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--nv:#1A2744;--or:#D46A10;--orb:#FFF3E0;--ord:#A34D00;--rd:#C62828;--rb:#FFF0F0}
+body{font-family:Arial,sans-serif;background:#E8EAF0;padding:20px;font-size:14px}
+.wrap{max-width:720px;margin:0 auto;border-radius:12px;overflow:hidden;border:1px solid #CCC;box-shadow:0 6px 28px rgba(0,0,0,.13);background:#fff}
+
+/* HEADER */
+.hdr{background:var(--nv);color:#fff;padding:18px 22px;display:flex;justify-content:space-between;align-items:center}
+.hdr h1{font-size:15px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-family:Arial,sans-serif}
+.hdr p{font-size:11px;opacity:.55;margin-top:3px;font-family:Arial,sans-serif}
+.dot{width:22px;height:22px;border-radius:50%;background:var(--or);flex-shrink:0;box-shadow:0 0 0 3px rgba(212,106,16,.3)}
+
+/* NAME */
+.name-row{display:flex;gap:10px;padding:12px 22px;border-bottom:1px solid #E0E0E0;background:#fff}
+.nf{flex:1;display:flex;flex-direction:column;gap:4px}
+.nf label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#888;font-family:Arial,sans-serif}
+.nf input{border:1.5px solid #D0D0D0;border-radius:7px;padding:8px 12px;font-size:14px;font-family:Arial,sans-serif;color:#111;background:#FAFAFA;outline:none;width:100%}
+.nf input:focus{border-color:var(--nv);background:#fff}
+
+/* BELT + LEGEND */
+.belt-row{display:flex;gap:6px;padding:10px 16px;align-items:center;border-bottom:1px solid #E0E0E0;background:#fff;flex-wrap:nowrap}
+.btag{background:var(--or);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:30px;font-family:Arial,sans-serif;white-space:nowrap}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;padding:10px 22px;background:#F5F6FA;border-bottom:1px solid #E0E0E0;font-size:11px;color:#555;font-family:Arial,sans-serif;align-items:center}
+.li{display:flex;align-items:center;gap:5px}
+.ln{width:20px;height:20px;border-radius:5px;background:var(--nv);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;gap:10px;padding:14px 22px 0;background:#F5F6FA;border-top:3px solid var(--or)}
+.badge{color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.07em;font-family:Arial,sans-serif}
+.badge.or{background:var(--or)}
+.badge.nv{background:var(--nv)}
+.sec-title{font-size:16px;font-weight:700;color:#111;font-family:Arial,sans-serif}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin-top:8px}
+thead tr{background:var(--nv)}
+thead th{color:#fff;font-size:12px;font-weight:700;padding:9px 4px;text-align:center;width:38px;min-width:38px;border-right:1px solid rgba(255,255,255,.12);font-family:Arial,sans-serif}
+thead th.thn{text-align:left;padding-left:22px;width:auto;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+thead th.shd{background:var(--or)}
+
+tbody tr{border-bottom:1px solid #E8E8E8;transition:background .08s}
+tbody tr:hover td{background:#F9F9F9}
+tbody tr:hover td.tdn{background:#F9F9F9}
+tbody tr.hl:hover td.tdn{background:#FFE8C8}
+tbody tr.rd-r:hover td.tdn{background:#FFE4E4}
+
+tbody td{padding:10px 4px;text-align:center;background:#fff;border-right:1px solid #EBEBEB;vertical-align:middle}
+tbody td.tdn{text-align:left;padding:11px 12px 11px 22px;border-right:2px solid #E0E0E0;vertical-align:middle}
+
+.jp{font-weight:700;font-size:13px;color:#111;font-family:Arial,sans-serif;line-height:1.3}
+.jp.hl{color:var(--ord)}
+.jp.rd{color:var(--rd)}
+.sv{font-size:11px;color:#888;margin-top:3px;font-family:Arial,sans-serif;line-height:1.4}
+.star{color:var(--or);font-size:14px}
+.age{font-size:10px;color:#fff;background:var(--nv);padding:1px 6px;border-radius:3px;margin-left:5px;font-weight:700;vertical-align:middle;font-family:Arial,sans-serif}
+
+tr.hl td{background:#fff}
+tr.hl td.tdn{background:var(--orb);border-left:3px solid var(--or)}
+tr.rd-r td{background:#fff}
+tr.rd-r td.tdn{background:var(--rb);border-left:3px solid var(--rd)}
+
+/* CHECKBOXES */
+.cb{width:34px;height:34px;border-radius:7px;border:2px solid #CACDD4;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;color:transparent;user-select:none;margin:0 auto;transition:all .12s;-webkit-tap-highlight-color:transparent}
+.cb:active{transform:scale(.88)}
+.cb.chk{background:var(--nv);border-color:var(--nv);color:#fff}
+.cb.sh{border-color:#C06010}
+.cb.sh.chk{background:var(--or);border-color:var(--or);color:#fff}
+.tcb{width:34px;height:34px;border-radius:7px;background:#EEF0F8;border:2px solid #D4D7E0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#555;margin:0 auto;font-family:Arial,sans-serif}
+
+/* FOOTER ROW */
+tfoot tr td{padding:9px 4px;background:#EEF0F8;border-top:2px solid var(--or)}
+tfoot td.tdn{text-align:right;padding-right:14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#666;font-family:Arial,sans-serif}
+.pct{font-size:14px;font-weight:700;padding:3px 10px;border-radius:6px;background:#DDE0EE;color:#1A2744;display:inline-block;font-family:Arial,sans-serif}
+.pct.ok{background:#C8EDD8;color:#145E30}
+
+/* MOTKAST */
+.mk{display:flex;align-items:center;gap:10px;padding:8px 22px;background:#FFF0F0;border-left:4px solid var(--rd);margin:3px 0}
+.mtag{background:var(--rd);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;white-space:nowrap;font-family:Arial,sans-serif;letter-spacing:.04em}
+.mname{font-size:13px;font-weight:700;color:var(--rd);font-family:Arial,sans-serif}
+
+.div{height:16px;background:#F0F2F8}
+
+/* BOTTOM BAR */
+.bar{display:flex;gap:10px;padding:12px 22px;background:#F5F6FA;border-top:1px solid #E0E0E0}
+.btn{flex:1;border:1.5px solid #CCC;background:#fff;color:#333;font-size:13px;font-weight:700;padding:10px;border-radius:8px;cursor:pointer;font-family:Arial,sans-serif;transition:background .1s}
+.btn:hover{background:#ECEEF5}
+.btn.ex{border-color:#1a7a3c;color:#1a7a3c;background:#E8F5EC}
+.btn.ex:hover{background:#C8EDD8}
+.sts{font-size:11px;color:#999;padding:4px 22px 6px;background:#F5F6FA;text-align:right;font-family:Arial,sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div><h1>Judo &ndash; Orange B&auml;lte</h1><p>Graderingsschema &middot; Bockar sparas i webbl&auml;saren</p></div>
+  <div class="dot"></div>
+</div>
+
+<div class="name-row">
+  <div class="nf"><label>F&ouml;rnamn</label><input id="fn" type="text" placeholder="F&ouml;rnamn..."></div>
+  <div class="nf"><label>Efternamn</label><input id="ln" type="text" placeholder="Efternamn..."></div>
+</div>
+
+<div class="belt-row">
+  <span style="font-size:10px;font-weight:700;text-transform:uppercase;color:#888;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0">B&auml;lteskrav:</span>
+  <span class="btag">5 KYU &middot; Halv Orange</span>
+  <span class="btag">4 KYU &middot; Hel Orange</span>
+</div>
+
+<div class="legend">
+  <div class="li"><div class="ln">1</div>Stillast&aring;ende</div>
+  <div class="li"><div class="ln">2</div>I l&auml;ttr&ouml;relse</div>
+  <div class="li"><div class="ln">3</div>I l&auml;tt randori</div>
+  <div class="li"><div class="ln" style="background:#6B7280">4</div>B&aring;da sidor</div>
+  <div class="li"><div class="ln" style="background:#D46A10">5</div>SHIAI</div>
+</div>
+
+<!-- ══ 5 KYU – HALV ORANGE ══ -->
+<div class="sec-hdr"><span class="badge nv">5 KYU</span><span class="sec-title">Halv Orange</span></div>
+<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:480px">
+  <thead><tr>
+    <th class="thn">Teknik</th>
+    <th>1</th><th>2</th><th>3</th><th>4</th><th class="shd">5</th><th>T</th>
+  </tr></thead>
+  <tbody>
+    <tr class="hl">
+      <td class="tdn"><div class="jp hl"><span class="star">&#9733;&#9733;</span> IPPON SEOI NAGE</div><div class="sv">Enarms skulderkast</div></td>
+      <td><div class="cb" data-id="5h-ippon-1">&#10003;</div></td><td><div class="cb" data-id="5h-ippon-2">&#10003;</div></td><td><div class="cb" data-id="5h-ippon-3">&#10003;</div></td><td><div class="cb" data-id="5h-ippon-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-ippon-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-ippon"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">TSURI GOSHI</div><div class="sv">Lyftkast med h&ouml;ften</div></td>
+      <td><div class="cb" data-id="5h-tsurig-1">&#10003;</div></td><td><div class="cb" data-id="5h-tsurig-2">&#10003;</div></td><td><div class="cb" data-id="5h-tsurig-3">&#10003;</div></td><td><div class="cb" data-id="5h-tsurig-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-tsurig-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-tsurig"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">MOROTE SEOI NAGE</div><div class="sv">Tv&aring;arms skulderkast</div></td>
+      <td><div class="cb" data-id="5h-morote-1">&#10003;</div></td><td><div class="cb" data-id="5h-morote-2">&#10003;</div></td><td><div class="cb" data-id="5h-morote-3">&#10003;</div></td><td><div class="cb" data-id="5h-morote-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-morote-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-morote"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">TSURI KOMI GOSHI</div><div class="sv">H&ouml;ftkast med drag och lyft</div></td>
+      <td><div class="cb" data-id="5h-tsuri-1">&#10003;</div></td><td><div class="cb" data-id="5h-tsuri-2">&#10003;</div></td><td><div class="cb" data-id="5h-tsuri-3">&#10003;</div></td><td><div class="cb" data-id="5h-tsuri-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-tsuri-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-tsuri"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">DE ASHI BARAI</div><div class="sv">Fr&auml;mre fotsvep</div></td>
+      <td><div class="cb" data-id="5h-deashi-1">&#10003;</div></td><td><div class="cb" data-id="5h-deashi-2">&#10003;</div></td><td><div class="cb" data-id="5h-deashi-3">&#10003;</div></td><td><div class="cb" data-id="5h-deashi-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-deashi-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-deashi"></div></td>
+    </tr>
+    <tr class="rd-r">
+      <td class="tdn"><div class="jp rd">DE ASHI KUBI NAGE <span class="age">12 &aring;r</span></div><div class="sv">H&ouml;ftkast med grepp rygg &ndash; skuldra</div></td>
+      <td><div class="cb" data-id="5h-kubinage-1">&#10003;</div></td><td><div class="cb" data-id="5h-kubinage-2">&#10003;</div></td><td><div class="cb" data-id="5h-kubinage-3">&#10003;</div></td><td><div class="cb" data-id="5h-kubinage-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-kubinage-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-kubinage"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">USHIRO GESA GATAME</div><div class="sv">Omv&auml;nd grundfasth&aring;llning</div></td>
+      <td><div class="cb" data-id="5h-ushiro-1">&#10003;</div></td><td><div class="cb" data-id="5h-ushiro-2">&#10003;</div></td><td><div class="cb" data-id="5h-ushiro-3">&#10003;</div></td><td><div class="cb" data-id="5h-ushiro-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-ushiro-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-ushiro"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">KUZURE YOKO SHIHO GATAME</div><div class="sv">Variation p&aring; fyrpunktsfasth&aring;llning fr&aring;n sidan</div></td>
+      <td><div class="cb" data-id="5h-kuzure-1">&#10003;</div></td><td><div class="cb" data-id="5h-kuzure-2">&#10003;</div></td><td><div class="cb" data-id="5h-kuzure-3">&#10003;</div></td><td><div class="cb" data-id="5h-kuzure-4">&#10003;</div></td><td><div class="cb sh" data-id="5h-kuzure-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5h-kuzure"></div></td>
+    </tr>
+  </tbody>
+  <tfoot><tr>
+    <td class="tdn">Godk&auml;nt krav &nbsp;<strong>80%</strong></td>
+    <td></td><td></td><td></td><td></td><td></td>
+    <td style="text-align:center"><span class="pct" id="p5h">0%</span></td>
+  </tr></tfoot>
+</table></div>
+<div class="mk"><span class="mtag">Offerkast</span><span class="mname">&#9733; Uchi-makikomi</span></div>
+
+<div class="div"></div>
+
+<!-- ══ 4 KYU – HEL ORANGE ══ -->
+<div class="sec-hdr"><span class="badge or">4 KYU</span><span class="sec-title">Hel Orange</span></div>
+<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="min-width:480px">
+  <thead><tr>
+    <th class="thn">Teknik</th>
+    <th>1</th><th>2</th><th>3</th><th>4</th><th class="shd">5</th><th>T</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="tdn"><div class="jp"><span class="star">&#9733;</span> O SOTO GARI</div><div class="sv">Stor yttre bensvep</div></td>
+      <td><div class="cb" data-id="4h-osoto-1">&#10003;</div></td><td><div class="cb" data-id="4h-osoto-2">&#10003;</div></td><td><div class="cb" data-id="4h-osoto-3">&#10003;</div></td><td><div class="cb" data-id="4h-osoto-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-osoto-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-osoto"></div></td>
+    </tr>
+    <tr class="hl">
+      <td class="tdn"><div class="jp hl"><span class="star">&#9733;&#9733;</span> UCHI MATA</div><div class="sv">Som h&ouml;ftteknik</div></td>
+      <td><div class="cb" data-id="4h-uchimata-1">&#10003;</div></td><td><div class="cb" data-id="4h-uchimata-2">&#10003;</div></td><td><div class="cb" data-id="4h-uchimata-3">&#10003;</div></td><td><div class="cb" data-id="4h-uchimata-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-uchimata-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-uchimata"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">TAI OTOSHI</div><div class="sv">Handkast med fot/benblockering</div></td>
+      <td><div class="cb" data-id="4h-tai-1">&#10003;</div></td><td><div class="cb" data-id="4h-tai-2">&#10003;</div></td><td><div class="cb" data-id="4h-tai-3">&#10003;</div></td><td><div class="cb" data-id="4h-tai-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-tai-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-tai"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">HARAI GOSHI</div><div class="sv">Svepande ben/h&ouml;ftkast</div></td>
+      <td><div class="cb" data-id="4h-harai-1">&#10003;</div></td><td><div class="cb" data-id="4h-harai-2">&#10003;</div></td><td><div class="cb" data-id="4h-harai-3">&#10003;</div></td><td><div class="cb" data-id="4h-harai-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-harai-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-harai"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">YOKO SHIHO GATAME</div><div class="sv">Fyrpunktsfasth&aring;llning fr&aring;n sidan</div></td>
+      <td><div class="cb" data-id="4h-yoko-1">&#10003;</div></td><td><div class="cb" data-id="4h-yoko-2">&#10003;</div></td><td><div class="cb" data-id="4h-yoko-3">&#10003;</div></td><td><div class="cb" data-id="4h-yoko-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-yoko-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-yoko"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">O-SOTO-GAESHI</div><div class="sv">Motkast</div></td>
+      <td><div class="cb" data-id="4h-osotog-1">&#10003;</div></td><td><div class="cb" data-id="4h-osotog-2">&#10003;</div></td><td><div class="cb" data-id="4h-osotog-3">&#10003;</div></td><td><div class="cb" data-id="4h-osotog-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-osotog-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-osotog"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">O-SOTO-MAKIKOMI</div><div class="sv">Offerkast</div></td>
+      <td><div class="cb" data-id="4h-osotom-1">&#10003;</div></td><td><div class="cb" data-id="4h-osotom-2">&#10003;</div></td><td><div class="cb" data-id="4h-osotom-3">&#10003;</div></td><td><div class="cb" data-id="4h-osotom-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-osotom-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-osotom"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">USHI-MATA-SUKASHI</div><div class="sv">Kontrings kast</div></td>
+      <td><div class="cb" data-id="4h-ushi-1">&#10003;</div></td><td><div class="cb" data-id="4h-ushi-2">&#10003;</div></td><td><div class="cb" data-id="4h-ushi-3">&#10003;</div></td><td><div class="cb" data-id="4h-ushi-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-ushi-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-ushi"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">HARAI-GOSHI-GAESHI</div><div class="sv">Motkast</div></td>
+      <td><div class="cb" data-id="4h-haraig-1">&#10003;</div></td><td><div class="cb" data-id="4h-haraig-2">&#10003;</div></td><td><div class="cb" data-id="4h-haraig-3">&#10003;</div></td><td><div class="cb" data-id="4h-haraig-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-haraig-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-haraig"></div></td>
+    </tr>
+    <tr class="rd-r">
+      <td class="tdn"><div class="jp rd">HARAI-MAKIKOMI <span class="age">14 &aring;r</span></div><div class="sv">Offerkast</div></td>
+      <td><div class="cb" data-id="4h-haraim-1">&#10003;</div></td><td><div class="cb" data-id="4h-haraim-2">&#10003;</div></td><td><div class="cb" data-id="4h-haraim-3">&#10003;</div></td><td><div class="cb" data-id="4h-haraim-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-haraim-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-haraim"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">NAMI JUU JI JIME</div><div class="sv">Halsl&aring;s &ndash; medkorsade armar, b&aring;da tummarna uppåt</div></td>
+      <td><div class="cb" data-id="4h-nami-1">&#10003;</div></td><td><div class="cb" data-id="4h-nami-2">&#10003;</div></td><td><div class="cb" data-id="4h-nami-3">&#10003;</div></td><td><div class="cb" data-id="4h-nami-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-nami-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-nami"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">GYAKU JUU JI JIME</div><div class="sv">Omv&auml;nd halsst&auml;s, tummarna uppåt</div></td>
+      <td><div class="cb" data-id="4h-gyaku-1">&#10003;</div></td><td><div class="cb" data-id="4h-gyaku-2">&#10003;</div></td><td><div class="cb" data-id="4h-gyaku-3">&#10003;</div></td><td><div class="cb" data-id="4h-gyaku-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-gyaku-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-gyaku"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">HON GESA GATAME</div><div class="sv">Grundfasth&aring;llning</div></td>
+      <td><div class="cb" data-id="4h-hon-1">&#10003;</div></td><td><div class="cb" data-id="4h-hon-2">&#10003;</div></td><td><div class="cb" data-id="4h-hon-3">&#10003;</div></td><td><div class="cb" data-id="4h-hon-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-hon-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-hon"></div></td>
+    </tr>
+    <tr class="rd-r">
+      <td class="tdn"><div class="jp rd">KATA JUU JI JIME <span class="age">14 &aring;r</span></div><div class="sv">Halsl&aring;s &ndash; medkorsade armar, en tumme upp, en ned</div></td>
+      <td><div class="cb" data-id="4h-kata-1">&#10003;</div></td><td><div class="cb" data-id="4h-kata-2">&#10003;</div></td><td><div class="cb" data-id="4h-kata-3">&#10003;</div></td><td><div class="cb" data-id="4h-kata-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-kata-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-kata"></div></td>
+    </tr>
+    <tr class="rd-r">
+      <td class="tdn"><div class="jp rd">UDE GARAMI <span class="age">14 &aring;r</span></div><div class="sv">Arml&aring;s med b&ouml;jd arm</div></td>
+      <td><div class="cb" data-id="4h-ude-1">&#10003;</div></td><td><div class="cb" data-id="4h-ude-2">&#10003;</div></td><td><div class="cb" data-id="4h-ude-3">&#10003;</div></td><td><div class="cb" data-id="4h-ude-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-ude-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-ude"></div></td>
+    </tr>
+    <tr class="rd-r">
+      <td class="tdn"><div class="jp rd">UDE HISHGI JUJI GATAME <span class="age">14 &aring;r</span></div><div class="sv">Arml&aring;s med benens h&ouml;ftd&auml;p</div></td>
+      <td><div class="cb" data-id="4h-udeh-1">&#10003;</div></td><td><div class="cb" data-id="4h-udeh-2">&#10003;</div></td><td><div class="cb" data-id="4h-udeh-3">&#10003;</div></td><td><div class="cb" data-id="4h-udeh-4">&#10003;</div></td><td><div class="cb sh" data-id="4h-udeh-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-4h-udeh"></div></td>
+    </tr>
+  </tbody>
+  <tfoot><tr>
+    <td class="tdn">Godk&auml;nt krav &nbsp;<strong>80%</strong></td>
+    <td></td><td></td><td></td><td></td><td></td>
+    <td style="text-align:center"><span class="pct" id="p4h">0%</span></td>
+  </tr></tfoot>
+</table></div>
+<div class="mk"><span class="mtag">Motkast</span><span class="mname">&#9733; O-soto-gaeshi</span></div>
+<div class="mk" style="margin-top:3px"><span class="mtag">Offerkast</span><span class="mname">&#9733; O-soto-makikomi &nbsp;&middot;&nbsp; Harai-makikomi</span></div>
+
+<div class="sts" id="sts">Redo</div>
+<div class="bar">
+  <button class="btn" onclick="resetAll()">&#8635; Rensa alla bockar</button>
+  <button class="btn ex" onclick="exportXLSX()">&#8659; Ladda ner Excel</button>
+</div>
+</div>
+
+<script>
+var R5=['5h-ippon','5h-tsurig','5h-morote','5h-tsuri','5h-deashi','5h-kubinage','5h-ushiro','5h-kuzure'];
+var R4=['4h-osoto','4h-uchimata','4h-tai','4h-harai','4h-yoko','4h-osotog','4h-osotom','4h-ushi','4h-haraig','4h-haraim','4h-nami','4h-gyaku','4h-hon','4h-kata','4h-ude','4h-udeh'];
+var state={};
+
+document.querySelectorAll('.cb').forEach(function(cb){
+  cb.addEventListener('click',function(){
+    var id=this.dataset.id;state[id]=!state[id];
+    this.classList.toggle('chk',!!state[id]);
+    update();saveState();
+  });
+});
+
+function update(){
+  R5.concat(R4).forEach(function(r){
+    var c=0;for(var i=1;i<=5;i++)if(state[r+'-'+i])c++;
+    var t=document.getElementById('T-'+r);if(t)t.textContent=c>0?c:'';
+  });
+  calc('p5h',R5);calc('p4h',R4);
+  document.querySelectorAll('.cb').forEach(function(cb){cb.classList.toggle('chk',!!state[cb.dataset.id]);});
+}
+
+function calc(id,rows){
+  var tot=0,chk=0;
+  rows.forEach(function(r){for(var i=1;i<=5;i++){tot++;if(state[r+'-'+i])chk++;}});
+  var pct=Math.round(chk/tot*100);
+  var el=document.getElementById(id);
+  if(el){el.textContent=pct+'%';el.className='pct'+(pct>=80?' ok':'');}
+}
+
+function resetAll(){
+  if(!confirm('Rensa alla bockar?'))return;
+  state={};update();saveState();
+}
+
+function saveState(){
+  try{
+    localStorage.setItem('judo-orange',JSON.stringify({checks:state,fn:document.getElementById('fn').value,ln:document.getElementById('ln').value}));
+    document.getElementById('sts').textContent='Sparat '+new Date().toLocaleTimeString('sv-SE');
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    var d=JSON.parse(localStorage.getItem('judo-orange')||'{}');
+    state=d.checks||{};
+    if(d.fn)document.getElementById('fn').value=d.fn;
+    if(d.ln)document.getElementById('ln').value=d.ln;
+    update();
+    if(Object.keys(state).length>0)document.getElementById('sts').textContent='Laddad';
+  }catch(e){}
+}
+
+function exportXLSX(){
+  if(typeof XLSX==='undefined'){document.getElementById('sts').textContent='Väntar på bibliotek...';setTimeout(exportXLSX,1500);return;}
+  var fn=document.getElementById('fn').value||'';
+  var ln=document.getElementById('ln').value||'';
+  var judoka=[fn,ln].filter(Boolean).join(' ')||'Okänd';
+  var L5={'5h-ippon':'IPPON SEOI NAGE','5h-tsurig':'KO SOTO GAKE','5h-morote':'MOROTE SEOI NAGE','5h-tsuri':'TSURI KOMI GOSHI','5h-deashi':'DE ASHI BARAI','5h-kubinage':'DE ASHI KUBI NAGE (12år)','5h-ushiro':'USHIRO GESA GATAME','5h-kuzure':'KUZURE YOKO SHIHO GATAME'};
+  var L4={'4h-osoto':'O SOTO GARI','4h-uchimata':'UCHI MATA','4h-tai':'TAI OTOSHI','4h-harai':'HARAI GOSHI','4h-yoko':'YOKO SHIHO GATAME','4h-osotog':'O-SOTO-GAESHI','4h-osotom':'O-SOTO-MAKIKOMI','4h-ushi':'USHI-MATA-SUKASHI','4h-haraig':'HARAI-GOSHI-GAESHI','4h-haraim':'HARAI-MAKIKOMI (14år)','4h-nami':'NAMI JUU JI JIME','4h-gyaku':'GYAKU JUU JI JIME','4h-hon':'HON GESA GATAME','4h-kata':'KATA JUU JI JIME (14år)','4h-ude':'UDE GARAMI (14år)','4h-udeh':'UDE HISHGI JUJI GATAME (14år)'};
+  var aoa=[['JUDO – ORANGE GRADERINGSSCHEMA VÅR 2026'],['Judoka:',judoka,'Datum:',new Date().toLocaleDateString('sv-SE')],[],['5 KYU – HALV ORANGE'],['Teknik','1','2','3','4','5','Totalt','Godkänt']];
+  R5.forEach(function(r){var t=0,row=[L5[r]];for(var c=1;c<=5;c++){var v=state[r+'-'+c]?1:0;row.push(v?'✓':'');t+=v;}row.push(t,t>=4?'✓ JA':'–');aoa.push(row);});
+  var t5=0,c5=0;R5.forEach(function(r){for(var c=1;c<=5;c++){t5++;if(state[r+'-'+c])c5++;}});
+  var p5=Math.round(c5/t5*100);
+  aoa.push([],['Godkänt krav 5 KYU','','','','','',p5+'%',p5>=80?'GODKÄNT':'EJ GODKÄNT'],[],['4 KYU – HEL ORANGE'],['Teknik','1','2','3','4','5','Totalt','Godkänt']);
+  R4.forEach(function(r){var t=0,row=[L4[r]];for(var c=1;c<=5;c++){var v=state[r+'-'+c]?1:0;row.push(v?'✓':'');t+=v;}row.push(t,t>=4?'✓ JA':'–');aoa.push(row);});
+  var t4=0,c4=0;R4.forEach(function(r){for(var c=1;c<=5;c++){t4++;if(state[r+'-'+c])c4++;}});
+  var p4=Math.round(c4/t4*100);
+  aoa.push([],['Godkänt krav 4 KYU','','','','','',p4+'%',p4>=80?'GODKÄNT':'EJ GODKÄNT']);
+  var ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:30},{wch:5},{wch:5},{wch:5},{wch:5},{wch:7},{wch:9},{wch:13}];
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,judoka.slice(0,31));
+  XLSX.writeFile(wb,'judo-orange-'+judoka.replace(/ /g,'-')+'.xlsx');
+  document.getElementById('sts').textContent='Excel nedladdad ✓';
+}
+
+document.getElementById('fn').addEventListener('input',saveState);
+document.getElementById('ln').addEventListener('input',saveState);
+loadState();
+</script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Judo Graderingsschema</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--nv:#1A2744;--yw:#F5C518;--yb:#FFFDE7;--rd:#C62828;--rb:#FFEBEE}
+body{font-family:Arial,sans-serif;background:#EAECF0;padding:16px}
+.wrap{max-width:680px;margin:0 auto;border-radius:10px;overflow:hidden;border:1px solid #D1D5DB;box-shadow:0 4px 20px rgba(0,0,0,.1);background:white}
+.hdr{background:var(--nv);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.hdr h1{font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.hdr p{font-size:11px;opacity:.6;margin-top:2px}
+.dot{width:20px;height:20px;border-radius:50%;background:var(--yw);flex-shrink:0}
+.name-row{display:flex;gap:8px;padding:10px 18px;border-bottom:1px solid #E5E7EB;background:white}
+.nf{flex:1;display:flex;flex-direction:column;gap:3px}
+.nf label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6B7280}
+.nf input{border:1px solid #D1D5DB;border-radius:6px;padding:7px 10px;font-size:13px;font-family:Arial,sans-serif;color:#111;background:#F8F9FB;outline:none;width:100%}
+.nf input:focus{border-color:var(--nv);background:white}
+.belt-row{display:flex;gap:6px;padding:8px 18px;align-items:center;border-bottom:1px solid #E5E7EB;background:white;flex-wrap:wrap}
+.btag{background:var(--yw);color:#7a6000;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;padding:8px 18px;background:#F8F9FB;border-bottom:1px solid #E5E7EB;font-size:11px;color:#555}
+.li{display:flex;align-items:center;gap:4px}
+.ln{width:18px;height:18px;border-radius:4px;background:var(--nv);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-hdr{display:flex;align-items:center;gap:8px;padding:10px 18px 0;background:#F8F9FB;border-top:2px solid var(--nv)}
+.badge{background:var(--nv);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.06em}
+.badge.y{background:var(--yw);color:#7a6000}
+.sec-title{font-size:14px;font-weight:700;color:#111}
+table{width:100%;border-collapse:collapse;margin-top:6px}
+thead tr{background:var(--nv)}
+thead th{color:#fff;font-size:11px;font-weight:700;padding:7px 4px;text-align:center;width:36px;border-right:1px solid rgba(255,255,255,.15)}
+thead th.thn{text-align:left;padding-left:18px;width:auto;font-size:10px;letter-spacing:.05em;text-transform:uppercase}
+thead th.shd{background:var(--yw);color:#7a6000}
+tbody tr{border-bottom:1px solid #E5E7EB}
+tbody td{padding:6px 4px;text-align:center;background:white;border-right:1px solid #E5E7EB}
+tbody td.tdn{text-align:left;padding:6px 8px 6px 18px;border-right:2px solid #E5E7EB}
+.jp{font-weight:700;font-size:12px;color:#111}
+.jp.hl{color:#8a6d00}
+.jp.rd{color:var(--rd)}
+.sv{font-size:10px;color:#777;margin-top:1px}
+.star{color:var(--yw)}
+tr.hl td{background:white}
+tr.hl td.tdn{background:var(--yb)}
+tr.rd-r td{background:white}
+tr.rd-r td.tdn{background:var(--rb)}
+.cb{width:28px;height:28px;border-radius:5px;border:1.5px solid #C8CDD6;background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:transparent;user-select:none;margin:0 auto;-webkit-tap-highlight-color:transparent}
+.cb.chk{background:var(--nv);border-color:var(--nv);color:white}
+.cb.sh{border-color:#cbb800}
+.cb.sh.chk{background:var(--yw);border-color:var(--yw);color:#7a6000}
+.tcb{width:28px;height:28px;border-radius:5px;background:#EEF0F5;border:1.5px solid #D1D5DB;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#444;margin:0 auto}
+.foot{background:#EEF0F5;border-top:2px solid var(--nv)}
+.foot td{padding:7px 4px;font-size:11px;font-weight:700;text-align:center;color:#1A2744;background:#EEF0F5}
+.foot td.tdn{text-align:right;padding-right:12px;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#666}
+.pct{font-size:13px;font-weight:700;padding:2px 8px;border-radius:5px;background:#EEF0F5;color:#1A2744;display:inline-block}
+.pct.ok{background:#d4f0df;color:#1a7a3c}
+.mk{display:flex;align-items:center;gap:8px;padding:6px 18px;background:var(--rb);border-left:3px solid var(--rd);margin:2px 0}
+.mtag{background:var(--rd);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;white-space:nowrap}
+.mname{font-size:12px;font-weight:700;color:var(--rd)}
+.div{height:12px;background:#F8F9FB}
+.bar{display:flex;gap:8px;padding:10px 18px;background:#F8F9FB;border-top:1px solid #E5E7EB}
+.btn{flex:1;border:1px solid #D1D5DB;background:white;color:#111;font-size:12px;font-weight:700;padding:9px;border-radius:7px;cursor:pointer;font-family:Arial,sans-serif}
+.btn.ex{border-color:#1a7a3c;color:#1a7a3c;background:#d4f0df}
+.sts{font-size:11px;color:#888;padding:3px 18px 5px;background:#F8F9FB;text-align:right}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div><h1>Judo &ndash; Graderingsschema</h1><p>Bockar sparas i webbl&auml;saren</p></div>
+  <div class="dot"></div>
+</div>
+
+<div class="name-row">
+  <div class="nf"><label>F&ouml;rnamn</label><input id="fn" type="text" placeholder="F&ouml;rnamn..."></div>
+  <div class="nf"><label>Efternamn</label><input id="ln" type="text" placeholder="Efternamn..."></div>
+</div>
+
+<div class="belt-row">
+  <span style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280">B&auml;lteskrav:</span>
+  <span class="btag">6-kyu &middot; Halv Gult</span>
+  <span class="btag">5-kyu &middot; Hel Gult</span>
+</div>
+
+<div class="legend">
+  <div class="li"><div class="ln">1</div>Stillast&aring;ende</div>
+  <div class="li"><div class="ln">2</div>L&auml;ttr&ouml;relse</div>
+  <div class="li"><div class="ln">3</div>Randori</div>
+  <div class="li"><div class="ln" style="background:#6B7280">4</div>B&aring;da sidor</div>
+  <div class="li"><div class="ln" style="background:#F5C518;color:#7a6000">5</div>SHIAI</div>
+</div>
+
+<!-- 6 KYU -->
+<div class="sec-hdr"><span class="badge">6 KYU</span><span class="sec-title">Halv Gult</span></div>
+<table>
+  <thead><tr>
+    <th class="thn">Teknik</th>
+    <th>1</th><th>2</th><th>3</th><th>4</th><th class="shd">5</th><th>T</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="tdn"><div class="jp">O SOTO OTOSHI</div><div class="sv">Stor yttre f&auml;llningsteknik</div></td>
+      <td><div class="cb" data-id="6k-osoto-1">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-osoto-2">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-osoto-3">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-osoto-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="6k-osoto-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-6k-osoto"></div></td>
+    </tr>
+    <tr class="hl">
+      <td class="tdn"><div class="jp hl"><span class="star">&#9733;</span> O UCHI GARI</div><div class="sv">Stort inre bensvep</div></td>
+      <td><div class="cb" data-id="6k-ouchi-1">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-ouchi-2">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-ouchi-3">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-ouchi-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="6k-ouchi-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-6k-ouchi"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">O GOSHI</div><div class="sv">Stort h&ouml;ftkast</div></td>
+      <td><div class="cb" data-id="6k-ogoshi-1">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-ogoshi-2">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-ogoshi-3">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-ogoshi-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="6k-ogoshi-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-6k-ogoshi"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">KUZURE GESA GATAME</div><div class="sv">Variation p&aring; grundfasth&aring;llning</div></td>
+      <td><div class="cb" data-id="6k-kuzure-1">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-kuzure-2">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-kuzure-3">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-kuzure-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="6k-kuzure-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-6k-kuzure"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">MUNE GATAME</div><div class="sv">Br&ouml;stkorgsfasth&aring;llning</div></td>
+      <td><div class="cb" data-id="6k-mune-1">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-mune-2">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-mune-3">&#10003;</div></td>
+      <td><div class="cb" data-id="6k-mune-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="6k-mune-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-6k-mune"></div></td>
+    </tr>
+  </tbody>
+  <tfoot class="foot"><tr>
+    <td class="tdn">Godk&auml;nt krav 80%</td>
+    <td></td><td></td><td></td><td></td><td></td>
+    <td><span class="pct" id="p6">0%</span></td>
+  </tr></tfoot>
+</table>
+
+<div class="mk"><span class="mtag">Motkast</span><span class="mname">&#9733; O-uchi-gaeshi</span></div>
+<div class="div"></div>
+
+<!-- 5 KYU -->
+<div class="sec-hdr"><span class="badge y">5 KYU</span><span class="sec-title">Hel Gult</span></div>
+<table>
+  <thead><tr>
+    <th class="thn">Teknik</th>
+    <th>1</th><th>2</th><th>3</th><th>4</th><th class="shd">5</th><th>T</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="tdn"><div class="jp">KO SOTO GARI</div><div class="sv">Litet yttre mejning</div></td>
+      <td><div class="cb" data-id="5k-kosoto-1">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kosoto-2">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kosoto-3">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kosoto-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="5k-kosoto-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5k-kosoto"></div></td>
+    </tr>
+    <tr class="hl">
+      <td class="tdn"><div class="jp hl"><span class="star">&#9733;</span> KO UCHI GARI</div><div class="sv">Liten inre fot mejning</div></td>
+      <td><div class="cb" data-id="5k-kouchi-1">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kouchi-2">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kouchi-3">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kouchi-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="5k-kouchi-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5k-kouchi"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">HIZA GURUMA</div><div class="sv">Blockerande kn&auml;kast</div></td>
+      <td><div class="cb" data-id="5k-hiza-1">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-hiza-2">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-hiza-3">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-hiza-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="5k-hiza-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5k-hiza"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">ERI SEOI NAGE</div><div class="sv">Krage skulderkast</div></td>
+      <td><div class="cb" data-id="5k-eri-1">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-eri-2">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-eri-3">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-eri-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="5k-eri-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5k-eri"></div></td>
+    </tr>
+    <tr class="rd-r">
+      <td class="tdn"><div class="jp rd">KOSHI GURUMA</div><div class="sv">H&ouml;ftkast i cirkel (12 &aring;r)</div></td>
+      <td><div class="cb" data-id="5k-koshi-1">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-koshi-2">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-koshi-3">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-koshi-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="5k-koshi-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5k-koshi"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">KAMI SHIHO GATAME</div><div class="sv">Fyrpunktsfasth&aring;llning ovanifrån</div></td>
+      <td><div class="cb" data-id="5k-kami-1">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kami-2">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kami-3">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-kami-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="5k-kami-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5k-kami"></div></td>
+    </tr>
+    <tr>
+      <td class="tdn"><div class="jp">TATE SHIHO GATAME</div><div class="sv">Skulderfasth&aring;llning gr&auml;nsle &ouml;ver</div></td>
+      <td><div class="cb" data-id="5k-tate-1">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-tate-2">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-tate-3">&#10003;</div></td>
+      <td><div class="cb" data-id="5k-tate-4">&#10003;</div></td>
+      <td><div class="cb sh" data-id="5k-tate-5">&#10003;</div></td>
+      <td><div class="tcb" id="T-5k-tate"></div></td>
+    </tr>
+  </tbody>
+  <tfoot class="foot"><tr>
+    <td class="tdn">Godk&auml;nt krav 80%</td>
+    <td></td><td></td><td></td><td></td><td></td>
+    <td><span class="pct" id="p5">0%</span></td>
+  </tr></tfoot>
+</table>
+
+<div class="mk"><span class="mtag">Offerkast</span><span class="mname">&#9733; Ko-uchi-makikomi</span></div>
+<div class="mk" style="margin-top:2px"><span class="mtag">Motkast</span><span class="mname">&#9733; Ko-ushi-gaesh</span></div>
+
+<div class="sts" id="sts">Redo</div>
+<div class="bar">
+  <button class="btn" onclick="resetAll()">&#8635; Rensa alla bockar</button>
+  <button class="btn ex" onclick="exportXLSX()">&#8659; Ladda ner Excel</button>
+</div>
+</div>
+
+<script>
+const ROWS6=['6k-osoto','6k-ouchi','6k-ogoshi','6k-kuzure','6k-mune'];
+const ROWS5=['5k-kosoto','5k-kouchi','5k-hiza','5k-eri','5k-koshi','5k-kami','5k-tate'];
+let state={};
+
+document.querySelectorAll('.cb').forEach(function(cb){
+  cb.addEventListener('click',function(){
+    var id=this.dataset.id;
+    state[id]=!state[id];
+    this.classList.toggle('chk',!!state[id]);
+    update();
+    saveState();
+  });
+});
+
+function update(){
+  [...ROWS6,...ROWS5].forEach(function(r){
+    var c=0;
+    for(var i=1;i<=5;i++) if(state[r+'-'+i]) c++;
+    var t=document.getElementById('T-'+r);
+    if(t) t.textContent=c>0?c:'';
+  });
+  calc('p6',ROWS6);
+  calc('p5',ROWS5);
+  document.querySelectorAll('.cb').forEach(function(cb){
+    cb.classList.toggle('chk',!!state[cb.dataset.id]);
+  });
+}
+
+function calc(pctId,rows){
+  var tot=0,chk=0;
+  rows.forEach(function(r){for(var i=1;i<=5;i++){tot++;if(state[r+'-'+i])chk++;}});
+  var pct=Math.round(chk/tot*100);
+  var el=document.getElementById(pctId);
+  if(el){el.textContent=pct+'%';el.className='pct'+(pct>=80?' ok':'');}
+}
+
+function resetAll(){
+  if(!confirm('Rensa alla bockar?')) return;
+  state={};
+  update();
+  saveState();
+}
+
+function saveState(){
+  try{
+    localStorage.setItem('judo-state',JSON.stringify({checks:state,fn:document.getElementById('fn').value,ln:document.getElementById('ln').value}));
+    document.getElementById('sts').textContent='Sparat '+new Date().toLocaleTimeString('sv-SE');
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    var d=JSON.parse(localStorage.getItem('judo-state')||'{}');
+    state=d.checks||{};
+    if(d.fn) document.getElementById('fn').value=d.fn;
+    if(d.ln) document.getElementById('ln').value=d.ln;
+    update();
+    if(Object.keys(state).length>0) document.getElementById('sts').textContent='Laddad';
+  }catch(e){}
+}
+
+function exportXLSX(){
+  if(typeof XLSX==='undefined'){
+    document.getElementById('sts').textContent='Vänta, laddar bibliotek...';
+    setTimeout(exportXLSX,1500);return;
+  }
+  var fn=document.getElementById('fn').value||'';
+  var ln=document.getElementById('ln').value||'';
+  var judoka=[fn,ln].filter(Boolean).join(' ')||'Okänd';
+  var labels6={
+    '6k-osoto':'O SOTO OTOSHI','6k-ouchi':'O UCHI GARI','6k-ogoshi':'O GOSHI',
+    '6k-kuzure':'KUZURE GESA GATAME','6k-mune':'MUNE GATAME'
+  };
+  var labels5={
+    '5k-kosoto':'KO SOTO GARI','5k-kouchi':'KO UCHI GARI','5k-hiza':'HIZA GURUMA',
+    '5k-eri':'ERI SEOI NAGE','5k-koshi':'KOSHI GURUMA',
+    '5k-kami':'KAMI SHIHO GATAME','5k-tate':'TATE SHIHO GATAME'
+  };
+  var aoa=[
+    ['JUDO – GRADERINGSSCHEMA VÅR 2026'],
+    ['Judoka:',judoka,'Datum:',new Date().toLocaleDateString('sv-SE')],
+    [],['6 KYU – HALV GULT'],
+    ['Teknik','1','2','3','4','5','Totalt','Godkänt']
+  ];
+  ROWS6.forEach(function(r){
+    var t=0,row=[labels6[r]];
+    for(var c=1;c<=5;c++){var v=state[r+'-'+c]?1:0;row.push(v?'✓':'');t+=v;}
+    row.push(t,t>=4?'✓ JA':'–');aoa.push(row);
+  });
+  var t6=0,c6=0;ROWS6.forEach(function(r){for(var c=1;c<=5;c++){t6++;if(state[r+'-'+c])c6++;}});
+  var p6=Math.round(c6/t6*100);
+  aoa.push([],['Godkänt krav 6 KYU','','','','','',p6+'%',p6>=80?'GODKÄNT':'EJ GODKÄNT'],[],
+    ['5 KYU – HEL GULT'],['Teknik','1','2','3','4','5','Totalt','Godkänt']);
+  ROWS5.forEach(function(r){
+    var t=0,row=[labels5[r]];
+    for(var c=1;c<=5;c++){var v=state[r+'-'+c]?1:0;row.push(v?'✓':'');t+=v;}
+    row.push(t,t>=4?'✓ JA':'–');aoa.push(row);
+  });
+  var t5=0,c5=0;ROWS5.forEach(function(r){for(var c=1;c<=5;c++){t5++;if(state[r+'-'+c])c5++;}});
+  var p5=Math.round(c5/t5*100);
+  aoa.push([],['Godkänt krav 5 KYU','','','','','',p5+'%',p5>=80?'GODKÄNT':'EJ GODKÄNT']);
+  var ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:26},{wch:5},{wch:5},{wch:5},{wch:5},{wch:7},{wch:9},{wch:13}];
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,judoka.slice(0,31));
+  XLSX.writeFile(wb,'judo-'+judoka.replace(/ /g,'-')+'.xlsx');
+  document.getElementById('sts').textContent='Excel nedladdad ✓';
+}
+
+document.getElementById('fn').addEventListener('input',saveState);
+document.getElementById('ln').addEventListener('input',saveState);
+loadState();
+</script>
+</body>
+</html>

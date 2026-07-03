@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zakuro Judo – Graderingsscheman</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#1A2744;min-height:100vh;padding:0}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#1A2744 0%,#243560 100%);padding:48px 24px 40px;text-align:center;border-bottom:3px solid rgba(255,255,255,.08)}
+.logo{font-size:48px;margin-bottom:12px}
+.hero h1{color:#fff;font-size:26px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.hero p{color:rgba(255,255,255,.55);font-size:13px;letter-spacing:.03em}
+
+/* CARDS GRID */
+.grid{max-width:600px;margin:0 auto;padding:32px 20px 48px;display:flex;flex-direction:column;gap:14px}
+
+.card{display:flex;align-items:center;gap:18px;background:#fff;border-radius:14px;padding:18px 20px;text-decoration:none;color:#111;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s;border-left:5px solid #ccc}
+.card:active{transform:scale(.97)}
+
+.card-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.card-body{flex:1}
+.card-kyu{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.5;margin-bottom:2px}
+.card-title{font-size:16px;font-weight:700;color:#111}
+.card-sub{font-size:11px;color:#888;margin-top:2px}
+.card-arrow{font-size:18px;color:#ccc;flex-shrink:0}
+
+/* Belt colors */
+.gult  {border-left-color:#F5C518}
+.gult  .card-icon{background:#FFFDE7}
+.orange{border-left-color:#D46A10}
+.orange .card-icon{background:#FFF3E0}
+.gront {border-left-color:#2E7D32}
+.gront .card-icon{background:#F1F8E9}
+.blatt {border-left-color:#1565C0}
+.blatt .card-icon{background:#E3F2FD}
+.brunt {border-left-color:#6D4C41}
+.brunt .card-icon{background:#EFEBE9}
+
+/* FOOTER */
+.footer{text-align:center;padding:20px;color:rgba(255,255,255,.25);font-size:11px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo">🥋</div>
+  <h1>Zakuro Judo</h1>
+  <p>Graderingsscheman &middot; Klicka p&aring; ditt b&auml;lte</p>
+</div>
+
+<div class="grid">
+
+  <a class="card gult" href="judo-grading-sheet.html">
+    <div class="card-icon">🟡</div>
+    <div class="card-body">
+      <div class="card-kyu">6 KYU &ndash; 5 KYU</div>
+      <div class="card-title">Gult B&auml;lte</div>
+      <div class="card-sub">Halv Gult &middot; Hel Gult</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </a>
+
+  <a class="card orange" href="judo-orange-sheet.html">
+    <div class="card-icon">🟠</div>
+    <div class="card-body">
+      <div class="card-kyu">5 KYU &ndash; 4 KYU</div>
+      <div class="card-title">Orange B&auml;lte</div>
+      <div class="card-sub">Halv Orange &middot; Hel Orange</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </a>
+
+  <a class="card gront" href="judo-gront-sheet.html">
+    <div class="card-icon">🟢</div>
+    <div class="card-body">
+      <div class="card-kyu">4 KYU &ndash; 3 KYU</div>
+      <div class="card-title">Gr&ouml;nt B&auml;lte</div>
+      <div class="card-sub">Halv Gr&ouml;nt &middot; Hel Gr&ouml;nt</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </a>
+
+  <a class="card blatt" href="judo-blatt-sheet.html">
+    <div class="card-icon">🔵</div>
+    <div class="card-body">
+      <div class="card-kyu">3 KYU &ndash; 2 KYU</div>
+      <div class="card-title">Bl&aring;tt B&auml;lte</div>
+      <div class="card-sub">Halv Bl&aring;tt &middot; Hel Bl&aring;tt</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </a>
+
+  <a class="card brunt" href="judo-brunt-sheet.html">
+    <div class="card-icon">🟤</div>
+    <div class="card-body">
+      <div class="card-kyu">2 KYU &ndash; 1 KYU</div>
+      <div class="card-title">Brunt B&auml;lte</div>
+      <div class="card-sub">Halv Brunt &middot; Brunt B&auml;lte</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </a>
+
+</div>
+
+<div class="footer">Zakuro Judo &copy; 2026</div>
+
+</body>
+</html>
